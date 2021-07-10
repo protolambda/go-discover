@@ -24,9 +24,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-eth-crypto"
 )
 
 // node represents a host on the network.
@@ -41,8 +40,8 @@ type encPubkey [64]byte
 
 func encodePubkey(key *ecdsa.PublicKey) encPubkey {
 	var e encPubkey
-	math.ReadBits(key.X, e[:len(e)/2])
-	math.ReadBits(key.Y, e[len(e)/2:])
+	crypto.ReadBits(key.X, e[:len(e)/2])
+	crypto.ReadBits(key.Y, e[len(e)/2:])
 	return e
 }
 

@@ -29,11 +29,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/discover/v4wire"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/protolambda/go-discover/v4wire"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-eth-crypto"
+	"github.com/protolambda/go-netutil"
 )
 
 // Errors
@@ -66,7 +65,7 @@ const (
 // UDPv4 implements the v4 wire protocol.
 type UDPv4 struct {
 	conn        UDPConn
-	log         log.Logger
+	log         Logger
 	netrestrict *netutil.Netlist
 	priv        *ecdsa.PrivateKey
 	localNode   *enode.LocalNode
@@ -488,7 +487,7 @@ func (t *UDPv4) loop() {
 			if contTimeouts > ntpFailureThreshold {
 				if time.Since(ntpWarnTime) >= ntpWarningCooldown {
 					ntpWarnTime = time.Now()
-					go checkClockDrift()
+					go checkClockDrift(t.log)
 				}
 				contTimeouts = 0
 			}

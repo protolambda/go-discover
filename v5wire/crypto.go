@@ -25,9 +25,8 @@ import (
 	"fmt"
 	"hash"
 
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-eth-crypto"
 	"golang.org/x/crypto/hkdf"
 )
 
@@ -143,7 +142,7 @@ func ecdh(privkey *ecdsa.PrivateKey, pubkey *ecdsa.PublicKey) []byte {
 	}
 	sec := make([]byte, 33)
 	sec[0] = 0x02 | byte(secY.Bit(0))
-	math.ReadBits(secX, sec[1:])
+	crypto.ReadBits(secX, sec[1:])
 	return sec
 }
 

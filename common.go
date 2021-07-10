@@ -20,11 +20,10 @@ import (
 	"crypto/ecdsa"
 	"net"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-enr"
+	"github.com/protolambda/go-mclock"
+	"github.com/protolambda/go-netutil"
 )
 
 // UDPConn is a network connection on which discovery can operate.
@@ -44,14 +43,14 @@ type Config struct {
 	NetRestrict  *netutil.Netlist   // network whitelist
 	Bootnodes    []*enode.Node      // list of bootstrap nodes
 	Unhandled    chan<- ReadPacket  // unhandled packets are sent on this channel
-	Log          log.Logger         // if set, log messages go here
+	Log          Logger             // if set, log messages go here
 	ValidSchemes enr.IdentityScheme // allowed identity schemes
 	Clock        mclock.Clock
 }
 
 func (cfg Config) withDefaults() Config {
 	if cfg.Log == nil {
-		cfg.Log = log.Root()
+		cfg.Log = nilLogger{}
 	}
 	if cfg.ValidSchemes == nil {
 		cfg.ValidSchemes = enode.ValidSchemes

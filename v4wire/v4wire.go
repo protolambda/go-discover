@@ -27,11 +27,10 @@ import (
 	"net"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-enr"
+	"github.com/protolambda/go-eth-crypto"
+	"github.com/protolambda/go-rlp"
 )
 
 // RPC packet types
@@ -275,8 +274,8 @@ func recoverNodeKey(hash, sig []byte) (key Pubkey, err error) {
 // EncodePubkey encodes a secp256k1 public key.
 func EncodePubkey(key *ecdsa.PublicKey) Pubkey {
 	var e Pubkey
-	math.ReadBits(key.X, e[:len(e)/2])
-	math.ReadBits(key.Y, e[len(e)/2:])
+	crypto.ReadBits(key.X, e[:len(e)/2])
+	crypto.ReadBits(key.Y, e[len(e)/2:])
 	return e
 }
 

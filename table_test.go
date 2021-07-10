@@ -27,10 +27,10 @@ import (
 	"testing/quick"
 	"time"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-enr"
+	"github.com/protolambda/go-eth-crypto"
+	"github.com/protolambda/go-netutil"
 )
 
 func TestTable_pingReplace(t *testing.T) {
@@ -50,7 +50,8 @@ func TestTable_pingReplace(t *testing.T) {
 
 func testPingReplace(t *testing.T, newNodeIsResponding, lastInBucketIsResponding bool) {
 	transport := newPingRecorder()
-	tab, db := newTestTable(transport)
+	log := newTestLogger(t)
+	tab, db := newTestTable(transport, log)
 	defer db.Close()
 	defer tab.close()
 
@@ -114,8 +115,9 @@ func TestBucket_bumpNoDuplicates(t *testing.T) {
 		},
 	}
 
+	log := newTestLogger(t)
 	prop := func(nodes []*node, bumps []int) (ok bool) {
-		tab, db := newTestTable(newPingRecorder())
+		tab, db := newTestTable(newPingRecorder(), log)
 		defer db.Close()
 		defer tab.close()
 
@@ -142,7 +144,8 @@ func TestBucket_bumpNoDuplicates(t *testing.T) {
 // This checks that the table-wide IP limit is applied correctly.
 func TestTable_IPLimit(t *testing.T) {
 	transport := newPingRecorder()
-	tab, db := newTestTable(transport)
+	log := newTestLogger(t)
+	tab, db := newTestTable(transport, log)
 	defer db.Close()
 	defer tab.close()
 
@@ -159,7 +162,8 @@ func TestTable_IPLimit(t *testing.T) {
 // This checks that the per-bucket IP limit is applied correctly.
 func TestTable_BucketIPLimit(t *testing.T) {
 	transport := newPingRecorder()
-	tab, db := newTestTable(transport)
+	log := newTestLogger(t)
+	tab, db := newTestTable(transport, log)
 	defer db.Close()
 	defer tab.close()
 
@@ -196,7 +200,8 @@ func TestTable_findnodeByID(t *testing.T) {
 	test := func(test *closeTest) bool {
 		// for any node table, Target and N
 		transport := newPingRecorder()
-		tab, db := newTestTable(transport)
+		log := newTestLogger(t)
+		tab, db := newTestTable(transport, log)
 		defer db.Close()
 		defer tab.close()
 		fillTable(tab, test.All)
@@ -257,7 +262,8 @@ func TestTable_ReadRandomNodesGetAll(t *testing.T) {
 	}
 	test := func(buf []*enode.Node) bool {
 		transport := newPingRecorder()
-		tab, db := newTestTable(transport)
+		log := newTestLogger(t)
+		tab, db := newTestTable(transport, log)
 		defer db.Close()
 		defer tab.close()
 		<-tab.initDone
@@ -306,7 +312,8 @@ func (*closeTest) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestTable_addVerifiedNode(t *testing.T) {
-	tab, db := newTestTable(newPingRecorder())
+	log := newTestLogger(t)
+	tab, db := newTestTable(newPingRecorder(), log)
 	<-tab.initDone
 	defer db.Close()
 	defer tab.close()
@@ -338,7 +345,8 @@ func TestTable_addVerifiedNode(t *testing.T) {
 }
 
 func TestTable_addSeenNode(t *testing.T) {
-	tab, db := newTestTable(newPingRecorder())
+	log := newTestLogger(t)
+	tab, db := newTestTable(newPingRecorder(), log)
 	<-tab.initDone
 	defer db.Close()
 	defer tab.close()
@@ -372,7 +380,8 @@ func TestTable_addSeenNode(t *testing.T) {
 // announces a new sequence number, the new record should be pulled.
 func TestTable_revalidateSyncRecord(t *testing.T) {
 	transport := newPingRecorder()
-	tab, db := newTestTable(transport)
+	log := newTestLogger(t)
+	tab, db := newTestTable(transport, log)
 	<-tab.initDone
 	defer db.Close()
 	defer tab.close()

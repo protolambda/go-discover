@@ -22,9 +22,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/protolambda/go-eth-crypto"
+	"github.com/protolambda/go-rlp"
 )
 
 // EIP-8 test vectors.
@@ -111,7 +110,7 @@ func TestForwardCompatibility(t *testing.T) {
 			continue
 		}
 		if !reflect.DeepEqual(packet, test.wantPacket) {
-			t.Errorf("got %s\nwant %s", spew.Sdump(packet), spew.Sdump(test.wantPacket))
+			t.Errorf("got %v\nwant %v", packet, test.wantPacket)
 		}
 		if nodekey != wantNodeKey {
 			t.Errorf("got id %v\nwant id %v", nodekey, wantNodeKey)

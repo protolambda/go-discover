@@ -30,11 +30,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-eth-crypto"
+	"github.com/protolambda/go-mclock"
 )
 
 // To regenerate discv5 test vectors, run
@@ -289,8 +287,8 @@ func TestTestVectorsV5(t *testing.T) {
 		idB     = enode.PubkeyToIDV4(&testKeyB.PublicKey)
 		addr    = "127.0.0.1"
 		session = &session{
-			writeKey: hexutil.MustDecode("0x00000000000000000000000000000000"),
-			readKey:  hexutil.MustDecode("0x01010101010101010101010101010101"),
+			writeKey: mustDecodeHex("0x00000000000000000000000000000000"),
+			readKey:  mustDecodeHex("0x01010101010101010101010101010101"),
 		}
 		challenge0A, challenge1A, challenge0B Whoareyou
 	)
@@ -484,8 +482,6 @@ func BenchmarkV5_DecodePing(b *testing.B) {
 	}
 }
 
-var pp = spew.NewDefaultConfig()
-
 type handshakeTest struct {
 	nodeA, nodeB handshakeTestNode
 	clock        mclock.Simulated
@@ -549,7 +545,7 @@ func (n *handshakeTestNode) expectDecode(t *testing.T, ptype byte, p []byte) Pac
 	if err != nil {
 		t.Fatal(fmt.Errorf("(%s) %v", n.ln.ID().TerminalString(), err))
 	}
-	t.Logf("(%s) %#v", n.ln.ID().TerminalString(), pp.NewFormatter(dec))
+	t.Logf("(%s) %#v", n.ln.ID().TerminalString(), dec)
 	if dec.Kind() != ptype {
 		t.Fatalf("expected packet type %d, got %d", ptype, dec.Kind())
 	}
@@ -633,4 +629,15 @@ func writeTestVector(file, comment string, data []byte) {
 		data = data[len(chunk):]
 		fmt.Fprintf(fd, "%x\n", chunk)
 	}
+}
+
+func mustDecodeHex(input string) []byte {
+	if strings.HasPrefix(input, "0x") {
+		input = input[2:]
+	}
+	b, err := hex.DecodeString(input)
+	if err != nil {
+		panic(err)
+	}
+	return b
 }

@@ -24,8 +24,6 @@ import (
 	"net"
 	"sort"
 	"time"
-
-	"github.com/ethereum/go-ethereum/log"
 )
 
 const (
@@ -43,7 +41,7 @@ func (s durationSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
 // checkClockDrift queries an NTP server for clock drifts and warns the user if
 // one large enough is detected.
-func checkClockDrift() {
+func checkClockDrift(log Logger) {
 	drift, err := sntpDrift(ntpChecks)
 	if err != nil {
 		return

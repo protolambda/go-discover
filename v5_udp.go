@@ -29,12 +29,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/discover/v5wire"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/protolambda/go-discover/v5wire"
+	"github.com/protolambda/go-enode"
+	"github.com/protolambda/go-enr"
+	"github.com/protolambda/go-mclock"
+	"github.com/protolambda/go-netutil"
 )
 
 const (
@@ -68,7 +67,7 @@ type UDPv5 struct {
 	priv         *ecdsa.PrivateKey
 	localNode    *enode.LocalNode
 	db           *enode.DB
-	log          log.Logger
+	log          Logger
 	clock        mclock.Clock
 	validSchemes enr.IdentityScheme
 
